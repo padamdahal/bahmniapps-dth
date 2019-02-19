@@ -8,7 +8,7 @@ try{
 	app.directive('input', function () {
 		var link = function ($scope, element, attrs, ngModel) {
 			if(element[0].type == 'date'){
-				// Disable click event for the datefield
+				// Disable click event for the date field
 				element.css('pointer-events','none');
 				
 				// Get the parent to append custom date field
