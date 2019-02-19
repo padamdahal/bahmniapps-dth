@@ -8,10 +8,35 @@ try{
 	app.directive('input', function () {
 		var link = function ($scope, element, attrs, ngModel) {
 			if(element[0].type == 'date'){
+				// Disable click event for the datefield
 				element.css('pointer-events','none');
+				
+				// Get the parent to append custom date field
 				var html = element.parent();
+				
+				// Create and append the custom date field
 				var customDateField = $('<input type="text" class="customDatePicker" placeholder="Nepali Date" />');
 				customDateField.appendTo(html);
+				
+				
+				// Assign custom datepicker in the new input field
+				// Modify for other calendars based on calendar implementation ///////////
+				customDateField.nepaliDatePicker({
+					dateFormat: "%y-%m-%d",
+					closeOnDateSelect: true
+				});
+				/////////////////////////////////////////////////////////////////////////
+				
+				// Update the date in ad Date on nepali date select
+				// Modify for other calendars based on calendar implementation //////////////////
+				customDateField.on("dateSelect", function (event) {
+					var adDate = calendarFunctions.formattedAd(event.datePickerData.adDate);
+					customDateField.prev('input').val(adDate);
+					customDateField.prev('input').trigger("change");
+					customDateField.prev('input').trigger("blur");
+				});
+				//////////////////////////////////////////////////////////////////////////////////
+				
 				
 				// if value is set translate to nepali and fill the date
 				var model = element.attr('ng-model');
@@ -50,24 +75,6 @@ try{
 						}
 					}
 				}
-				
-				// Assign custom datepicker in the new input field
-				// Modify for other calendars based on calendar implementation ///////////
-				customDateField.nepaliDatePicker({
-					dateFormat: "%y-%m-%d",
-					closeOnDateSelect: true
-				});
-				/////////////////////////////////////////////////////////////////////////
-				
-				// Update the date in ad Date on nepali date select
-				// Modify for other calendars based on calendar implementation //////////////////
-				customDateField.on("dateSelect", function (event) {
-					var adDate = calendarFunctions.formattedAd(event.datePickerData.adDate);
-					customDateField.prev('input').val(adDate);
-					customDateField.prev('input').trigger("change");
-					customDateField.prev('input').trigger("blur");
-				});
-				//////////////////////////////////////////////////////////////////////////////////
 			}
 		};
 		return { link: link };
